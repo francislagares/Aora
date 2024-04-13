@@ -1,0 +1,10 @@
+node_modules
+cli/
+docs/
+ios/
+android/
+coverage/
+tests/
+.vscode
+.expo
+.expo-shared
