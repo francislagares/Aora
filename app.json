@@ -21,7 +21,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.francislagares.Aora"
+      "package": "com.francislagares.aora"
     },
     "web": {
       "favicon": "./assets/favicon.png"
