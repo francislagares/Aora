@@ -8,11 +8,12 @@ import Trending from '@/components/Trending';
 import VideoCard from '@/components/VideoCard';
 import useAppwrite from '@/hooks/useAppwrite';
 import { images } from '@/constants';
-import { getAllPosts } from '@/lib/appwrite';
+import { getAllVideos, getLatestVideos } from '@/lib/appwrite';
 
 const Home = () => {
   const [refreshing, setRefreshing] = useState(false);
-  const { data: posts, refetch } = useAppwrite(getAllPosts);
+  const { data: videos, refetch } = useAppwrite(getAllVideos);
+  const { data: latestVideos } = useAppwrite(getLatestVideos);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -25,7 +26,7 @@ const Home = () => {
   return (
     <SafeAreaView className='h-full bg-primary'>
       <FlatList
-        data={posts}
+        data={videos}
         keyExtractor={item => item.$id}
         renderItem={({ item }) => <VideoCard video={item} />}
         ListHeaderComponent={() => (
@@ -56,7 +57,7 @@ const Home = () => {
                 Latest Videos
               </Text>
 
-              <Trending posts={[{ id: 1 }, { id: 2 }, { id: 3 }]} />
+              <Trending videos={latestVideos ?? []} />
             </View>
           </View>
         )}
