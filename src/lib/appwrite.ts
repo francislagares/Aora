@@ -17,12 +17,19 @@ export const appwrite = {
   storageId: '661d45df2506fb6ec5c5',
 };
 
+const {
+  endpoint,
+  platform,
+  projectId,
+  databaseId,
+  userCollectionId,
+  videoCollectionId,
+  storageId,
+} = appwrite;
+
 const client = new Client();
 
-client
-  .setEndpoint(appwrite.endpoint)
-  .setProject(appwrite.projectId)
-  .setPlatform(appwrite.platform);
+client.setEndpoint(endpoint).setProject(projectId).setPlatform(platform);
 
 const account = new Account(client);
 const avatars = new Avatars(client);
@@ -48,8 +55,8 @@ export const createUser = async (
     await signIn(email, password);
 
     const newUser = await databases.createDocument(
-      appwrite.databaseId,
-      appwrite.userCollectionId,
+      databaseId,
+      userCollectionId,
       ID.unique(),
       {
         accountId: newAccount.$id,
@@ -90,14 +97,24 @@ export const getCurrentUser = async () => {
     if (!currentAccount) throw Error;
 
     const currentUser = await databases.listDocuments(
-      appwrite.databaseId,
-      appwrite.userCollectionId,
+      databaseId,
+      userCollectionId,
       [Query.equal('accountId', currentAccount.$id)],
     );
 
     if (!currentAccount) throw Error;
 
     return currentUser.documents[0];
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getAllPosts = async () => {
+  try {
+    const posts = await databases.listDocuments(databaseId, videoCollectionId);
+
+    return posts.documents;
   } catch (error) {
     console.log(error);
   }
