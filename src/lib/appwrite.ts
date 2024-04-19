@@ -146,15 +146,33 @@ export const getLatestVideos = async () => {
 
 export const searchVideos = async (query: string) => {
   try {
-    const posts = await databases.listDocuments(
+    const videos = await databases.listDocuments(
       appwrite.databaseId,
       appwrite.videoCollectionId,
       [Query.search('title', query)],
     );
 
-    if (!posts) throw new Error('Something went wrong');
+    if (!videos) throw new Error('Something went wrong');
 
-    return posts.documents;
+    return videos.documents;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    }
+  }
+};
+
+export const getUserVideos = async (userId: string) => {
+  try {
+    const videos = await databases.listDocuments(
+      appwrite.databaseId,
+      appwrite.videoCollectionId,
+      [Query.equal('creator', userId)],
+    );
+
+    if (!videos) throw new Error('No videos found for this user');
+
+    return videos.documents;
   } catch (error) {
     if (error instanceof Error) {
       throw new Error(error.message);

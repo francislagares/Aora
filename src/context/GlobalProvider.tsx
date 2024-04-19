@@ -8,12 +8,13 @@ import {
 } from 'react';
 
 import { getCurrentUser } from '@/lib/appwrite';
+import { User } from '@/types/user';
 
 type GlobalContextType = {
   isLogged: boolean;
   setIsLogged: React.Dispatch<React.SetStateAction<boolean>>;
-  user: any; // Change 'any' to the type of user object if known
-  setUser: React.Dispatch<React.SetStateAction<any>>; // Change 'any' to the type of user object if known
+  user: User;
+  setUser: React.Dispatch<React.SetStateAction<User>>;
   isLoading: boolean;
 };
 
@@ -21,7 +22,7 @@ const GlobalContext = createContext<GlobalContextType>({} as GlobalContextType);
 
 export const GlobalProvider = ({ children }: PropsWithChildren) => {
   const [isLogged, setIsLogged] = useState(false);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User>({} as User);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -33,7 +34,7 @@ export const GlobalProvider = ({ children }: PropsWithChildren) => {
           setUser(res);
         } else {
           setIsLogged(false);
-          setUser(null);
+          setUser({} as User);
         }
       } catch (error) {
         console.log(error);
