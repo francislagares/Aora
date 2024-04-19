@@ -9,7 +9,7 @@ import {
 import * as Animatable from 'react-native-animatable';
 
 import { icons } from '@/constants';
-import { VideoProps, TrendingItemProps } from '@/types/video';
+import { TrendingItemProps, VideoProps } from '@/types/video';
 
 const zoomIn: any = {
   0: {
@@ -35,7 +35,7 @@ const TrendingItem = ({ activeItem, item }: TrendingItemProps) => {
   return (
     <Animatable.View
       className='mr-5'
-      animation={activeItem && activeItem.$id === item.$id ? zoomIn : zoomOut}
+      animation={activeItem === item.$id ? zoomIn : zoomOut}
       duration={500}
     >
       {isPlaying ? (

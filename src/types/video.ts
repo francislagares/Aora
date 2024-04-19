@@ -1,5 +1,4 @@
 export type IVideo = {
-  $id: string;
   title: string;
   thumbnail: string;
   video: string;

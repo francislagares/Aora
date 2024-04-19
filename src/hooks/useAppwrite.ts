@@ -20,10 +20,7 @@ const useAppwrite = <T>(fn: AppwriteFunction<T>): AppwriteResponse<T> => {
     try {
       const response = await fn();
 
-      setData(prevData => {
-        // Ensure response is an array and append it to previous data
-        return Array.isArray(response) ? [...prevData, ...response] : prevData;
-      });
+      setData(response);
     } catch (error) {
       if (error instanceof Error) {
         Alert.alert('Error', error.message);
@@ -35,7 +32,7 @@ const useAppwrite = <T>(fn: AppwriteFunction<T>): AppwriteResponse<T> => {
 
   useEffect(() => {
     fetchData();
-  }, [fn, fetchData]);
+  }, []);
 
   const refetch = () => fetchData();
 

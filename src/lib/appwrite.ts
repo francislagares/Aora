@@ -68,7 +68,9 @@ export const createUser = async (
 
     return newUser;
   } catch (error) {
-    console.log(error);
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    }
 
     if (error instanceof Error) {
       throw new Error(error.message);
@@ -82,7 +84,9 @@ export const signIn = async (email: string, password: string) => {
 
     return session;
   } catch (error) {
-    console.log(error);
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    }
 
     if (error instanceof Error) {
       throw new Error(error.message);
@@ -106,7 +110,9 @@ export const getCurrentUser = async () => {
 
     return currentUser.documents[0];
   } catch (error) {
-    console.log(error);
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    }
   }
 };
 
@@ -116,7 +122,9 @@ export const getAllVideos = async () => {
 
     return videos.documents;
   } catch (error) {
-    console.log(error);
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    }
   }
 };
 
@@ -130,6 +138,26 @@ export const getLatestVideos = async () => {
 
     return videos.documents;
   } catch (error) {
-    console.log(error);
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    }
+  }
+};
+
+export const searchVideos = async (query: string) => {
+  try {
+    const posts = await databases.listDocuments(
+      appwrite.databaseId,
+      appwrite.videoCollectionId,
+      [Query.search('title', query)],
+    );
+
+    if (!posts) throw new Error('Something went wrong');
+
+    return posts.documents;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    }
   }
 };
