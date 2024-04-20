@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import { FlatList, Image, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -7,13 +8,21 @@ import VideoCard from '@/components/VideoCard';
 import useAppwrite from '@/hooks/useAppwrite';
 import { icons } from '@/constants';
 import { useGlobalContext } from '@/context/GlobalProvider';
-import { getUserVideos } from '@/lib/appwrite';
+import { getUserVideos, signOut } from '@/lib/appwrite';
+import { User } from '@/types/user';
 
 const Profile = () => {
   const { user, setUser, setIsLogged } = useGlobalContext();
   const { data: videos } = useAppwrite(() => getUserVideos(user.$id));
 
-  const logout = () => {};
+  const logout = async () => {
+    await signOut();
+
+    setUser({} as User);
+    setIsLogged(false);
+
+    router.replace('/signIn');
+  };
 
   return (
     <SafeAreaView className='h-full bg-primary'>

@@ -8,12 +8,14 @@ import Trending from '@/components/Trending';
 import VideoCard from '@/components/VideoCard';
 import useAppwrite from '@/hooks/useAppwrite';
 import { images } from '@/constants';
+import { useGlobalContext } from '@/context/GlobalProvider';
 import { getAllVideos, getLatestVideos } from '@/lib/appwrite';
 
 const Home = () => {
-  const [refreshing, setRefreshing] = useState(false);
   const { data: videos, refetch } = useAppwrite(getAllVideos);
   const { data: latestVideos } = useAppwrite(getLatestVideos);
+  const { user, setUser, setIsLogged } = useGlobalContext();
+  const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -37,7 +39,7 @@ const Home = () => {
                   Welcome Back
                 </Text>
                 <Text className='taext-2xl font-psemibold text-white'>
-                  Francis
+                  {user?.username}
                 </Text>
               </View>
 

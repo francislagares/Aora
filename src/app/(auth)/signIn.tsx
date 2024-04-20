@@ -7,7 +7,7 @@ import CustomButton from '@/components/CustomButton';
 import FormField from '@/components/FormField';
 import { images } from '@/constants';
 import { useGlobalContext } from '@/context/GlobalProvider';
-import { signIn } from '@/lib/appwrite';
+import { getCurrentUser, signIn } from '@/lib/appwrite';
 
 const SignIn = () => {
   const { setUser, setIsLogged } = useGlobalContext();
@@ -25,9 +25,11 @@ const SignIn = () => {
     setIsSubmitting(true);
 
     try {
-      const result = await signIn(form.email, form.password);
+      await signIn(form.email, form.password);
 
-      setUser(result);
+      const user = await getCurrentUser();
+
+      setUser(user);
       setIsLogged(true);
 
       router.replace('/home');

@@ -71,10 +71,6 @@ export const createUser = async (
     if (error instanceof Error) {
       throw new Error(error.message);
     }
-
-    if (error instanceof Error) {
-      throw new Error(error.message);
-    }
   }
 };
 
@@ -87,7 +83,15 @@ export const signIn = async (email: string, password: string) => {
     if (error instanceof Error) {
       throw new Error(error.message);
     }
+  }
+};
 
+export const signOut = async () => {
+  try {
+    const session = await account.deleteSession('current');
+
+    return session;
+  } catch (error) {
     if (error instanceof Error) {
       throw new Error(error.message);
     }
