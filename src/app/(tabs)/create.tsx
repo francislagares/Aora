@@ -1,20 +1,64 @@
 import { useState } from 'react';
 import { ResizeMode, Video } from 'expo-av';
-import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import * as DocumentPicker from 'expo-document-picker';
+import {
+  Alert,
+  Image,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import CustomButton from '@/components/CustomButton';
 import FormField from '@/components/FormField';
 import { icons } from '@/constants';
 
+type FormState = {
+  title: string;
+  video: DocumentPicker.DocumentPickerAsset | undefined;
+  thumbnail: DocumentPicker.DocumentPickerAsset | undefined;
+  prompt: string;
+};
+
 const Create = () => {
   const [uploading, setUploading] = useState(false);
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<FormState>({
     title: '',
-    video: null,
-    thumbnail: null,
+    video: undefined,
+    thumbnail: undefined,
     propmt: '',
   });
+
+  const openPicker = async (selectType: string) => {
+    const result = await DocumentPicker.getDocumentAsync({
+      type:
+        selectType === 'image'
+          ? ['image/png', 'image/jpg']
+          : ['video/mp4', 'video/gif'],
+    });
+
+    if (!result.canceled) {
+      if (selectType === 'image') {
+        setForm({
+          ...form,
+          thumbnail: result.assets[0],
+        });
+      }
+
+      if (selectType === 'video') {
+        setForm({
+          ...form,
+          video: result.assets[0],
+        });
+      }
+    } else {
+      setTimeout(() => {
+        Alert.alert('Document picked', JSON.stringify(result, null, 2));
+      }, 100);
+    }
+  };
 
   const submit = async () => {};
 
@@ -36,7 +80,7 @@ const Create = () => {
             Updload Video
           </Text>
 
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => openPicker('video')}>
             {form.video ? (
               <Video
                 source={{ uri: form.video.uri }}
@@ -63,7 +107,7 @@ const Create = () => {
             Thumbnail Image
           </Text>
 
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => openPicker('image')}>
             {form.thumbnail ? (
               <Image
                 source={{ uri: form.thumbnail.uri }}
