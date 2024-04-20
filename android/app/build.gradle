@@ -83,9 +83,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'com.francislagares.Aora'
+    namespace 'com.francislagares.aora'
     defaultConfig {
-        applicationId 'com.francislagares.Aora'
+        applicationId 'com.francislagares.aora'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

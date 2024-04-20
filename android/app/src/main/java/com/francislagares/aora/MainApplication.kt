@@ -1,4 +1,4 @@
-package com.francislagares.Aora
+package com.francislagares.aora
 
 import android.app.Application
 import android.content.res.Configuration

@@ -1,4 +1,4 @@
-package com.francislagares.Aora
+package com.francislagares.aora
 
 import android.os.Build
 import android.os.Bundle

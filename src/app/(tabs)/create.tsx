@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ResizeMode, Video } from 'expo-av';
 import * as DocumentPicker from 'expo-document-picker';
+import { router } from 'expo-router';
 import {
   Alert,
   Image,
@@ -14,6 +15,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import CustomButton from '@/components/CustomButton';
 import FormField from '@/components/FormField';
 import { icons } from '@/constants';
+import { useGlobalContext } from '@/context/GlobalProvider';
+import { createVideo } from '@/lib/appwrite';
 
 type FormState = {
   title: string;
@@ -23,6 +26,7 @@ type FormState = {
 };
 
 const Create = () => {
+  const { user } = useGlobalContext();
   const [uploading, setUploading] = useState(false);
   const [form, setForm] = useState<FormState>({
     title: '',
@@ -60,7 +64,40 @@ const Create = () => {
     }
   };
 
-  const submit = async () => {};
+  const submit = async () => {
+    if (
+      form.prompt === '' ||
+      form.title === '' ||
+      !form.thumbnail ||
+      !form.video
+    ) {
+      return Alert.alert('Please provide all fields');
+    }
+
+    setUploading(true);
+
+    try {
+      await createVideo({
+        ...form,
+        userId: user.$id,
+      });
+
+      Alert.alert('Success', 'Post uploaded successfully');
+
+      router.push('/home');
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    } finally {
+      setForm({
+        title: '',
+        video: undefined,
+        thumbnail: undefined,
+        prompt: '',
+      });
+
+      setUploading(false);
+    }
+  };
 
   return (
     <SafeAreaView className='h-full bg-primary'>
@@ -132,7 +169,7 @@ const Create = () => {
 
         <FormField
           title='AI Prompt'
-          value={form.propmt}
+          value={form.prompt}
           placeholder='The prompt you used to create this video'
           handleChangeText={e => setForm({ ...form, prompt: e })}
           otherStyles='mt-7'

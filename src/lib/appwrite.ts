@@ -5,6 +5,7 @@ import {
   Databases,
   ID,
   Query,
+  Storage,
 } from 'react-native-appwrite';
 
 export const appwrite = {
@@ -34,6 +35,7 @@ client.setEndpoint(endpoint).setProject(projectId).setPlatform(platform);
 const account = new Account(client);
 const avatars = new Avatars(client);
 const databases = new Databases(client);
+const storage = new Storage();
 
 export const createUser = async (
   email: string,
@@ -183,3 +185,83 @@ export const getUserVideos = async (userId: string) => {
     }
   }
 };
+
+export const createVideo = async (form: any) => {
+  try {
+    const [thumbnailUrl, videoUrl] = await Promise.all([
+      uploadFile(form.thumbnail, 'image'),
+      uploadFile(form.video, 'video'),
+    ]);
+
+    const newPost = await databases.createDocument(
+      appwrite.databaseId,
+      appwrite.videoCollectionId,
+      ID.unique(),
+      {
+        title: form.title,
+        thumbnail: thumbnailUrl,
+        video: videoUrl,
+        prompt: form.prompt,
+        creator: form.userId,
+      },
+    );
+
+    return newPost;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    }
+  }
+};
+
+export const uploadFile = async (file: any, type: string) => {
+  if (!file) return;
+
+  const { mimeType, ...rest } = file;
+  const asset = { type: mimeType, ...rest };
+
+  try {
+    const uploadedFile = await storage.createFile(
+      appwrite.storageId,
+      ID.unique(),
+      asset,
+    );
+
+    const fileUrl = await getFilePreview(uploadedFile.$id, type);
+
+    return fileUrl;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    }
+  }
+};
+
+export async function getFilePreview(fileId: string, type: string) {
+  let fileUrl;
+
+  try {
+    if (type === 'video') {
+      fileUrl = storage.getFileView(appwrite.storageId, fileId);
+    } else if (type === 'image') {
+      fileUrl = storage.getFilePreview(
+        appwrite.storageId,
+        fileId,
+        2000,
+        2000,
+        'top',
+        100,
+      );
+    } else {
+      throw new Error('Invalid file type');
+    }
+
+    if (!fileUrl) throw Error;
+
+    return fileUrl;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    }
+  }
+}
